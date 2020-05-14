@@ -1,66 +1,105 @@
-
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="reset.css">
-    <style>
-      canvas {
-        border:1px solid #d3d3d3;
-        background-color: #000000;
-      }
-      p {
-        color:white;
-        text-align: center;
-      }
-      body {
-        background-color: black;
-        text-align: center;
-      }
-    </style>
-    <title>Browser Adventure</title>
-  </head>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="style.css">
+  <title>Browser Adventure</title>
+</head>
 
 
-  <body onload="startGame()">
+<body id="gameRoot">
 
-    <p id="welcome">Welcome to Browser Adventure!</p>
+  <p id="welcome">Welcome to Browser Adventure!</p>
 
-    <img id="bar" width="80%" height="80%" src="img/bar.jpg" alt="Image: The Bar">
-    <br/>
-    <button id="barBuyDrink" onmousedown="myFunction()">Buy a drink</button>
-    <button id="barConv" onmousedown="myFunction2()">Conversation</button>
-    <button id="barLeave" onmousedown="myFunction3()">Leave the bar</button>
-
-    <script>
-
-      //console.log('Test console text')
-
-      function startGame() {
-        //Everything that happens when the game starts put here
-        gameArea.start();
-      }
-
-      var gameArea = {
-        // canvas : document.createElement("canvas"),
-        //start : function() {
-        //   this.canvas.width = 1024;
-        //   this.canvas.height = 640;
-        //   this.context = this.canvas.getContext("2d");
-        //   document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-        //   this.frameNo = 0;
-        //   this.interval = setInterval(updateGameArea, 20);
-        //   },
-        // clear : function() {
-        //   this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        // }
-      }
-
-
-    </script>
-
-    <noscript>Sorry, your browser does not support JavaScript!</noscript>
-
-  </body>
+  <img id="themeImage" src="img/bar.jpg" alt="Background Image">
+  <br />
   
+  <script>
+
+    const gameState = {
+      currentLocation: 'bar',
+    }
+
+    const UI = {
+      setThemeImage: (image) => {
+        const imageElement = document.getElementById('themeImage')
+        imageElement.setAttribute("src", image)
+      },
+      setThemeButtons: (actions) => {
+        // Clear existing buttons
+        const existingButtons = Array.from(document.getElementsByClassName('action-button'))
+        existingButtons.forEach(button => button.remove())
+
+        // Find Root
+        const bodyElement = document.getElementById("gameRoot")
+
+        // Loop through actions
+        actions.forEach(action => {
+          const myButton = document.createElement('button')
+          myButton.setAttribute("class", "block action-button")
+          myButton.innerHTML = action.label
+          myButton.addEventListener('click', action.action)
+          bodyElement.append(myButton)
+        })
+      }
+    }
+
+    const GameManager = {
+      setRoom: (room) => {
+        UI.setThemeImage(room.image)
+        UI.setThemeButtons(room.actions)
+      }
+    }
+
+    const gameWorld = {
+      bar: {
+        image: "img/bar.jpg",
+        actions: [
+          {
+            label: 'Drink a Beer',
+            action: () => {
+              console.log('Drinking beer')
+            }
+          },
+          {
+            label: 'Shout at Man',
+            action: () => {
+              console.log('Shouting')
+            }
+          },
+          {
+            label: 'Leave',
+            action: () => {
+              GameManager.setRoom(gameWorld.townsquare)
+            }
+          }
+        ]
+      },
+      townsquare: {
+        image: "img/townsquare.jpg",
+        actions: [
+          {
+            label: 'Go for a drink',
+            action: () => {
+              GameManager.setRoom(gameWorld.bar)
+            }
+          }
+        ]
+      }
+    }
+
+    function startGame() {
+      GameManager.setRoom(gameWorld[gameState.currentLocation])
+    }
+
+    document.onload = startGame();
+
+  </script>
+
+  <noscript>Sorry, your browser does not support JavaScript!</noscript>
+
+</body>
+
 </html>

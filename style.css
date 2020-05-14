@@ -1,0 +1,33 @@
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #000000;
+    }
+p {
+    color:white;
+    text-align: center;
+    }
+body {
+    background-color: black;
+    text-align: center;
+    }
+.block {
+    display: inline;
+    border: none;
+    background-color: lightgray;
+    color: black;
+    padding: 14px 28px;
+    margin: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    }
+  
+.block:hover {
+    background-color: darkgray;
+    color: black;
+    }
+
+#themeImage {
+    width: "80%";
+    max-height: "80%";
+}
