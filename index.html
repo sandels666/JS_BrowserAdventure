@@ -18,8 +18,11 @@
   
   <script>
 
+
+//=============== GAME ENGINE ===============//
     const gameState = {
       currentLocation: 'bar',
+      beersDrunk: 0
     }
 
     const UI = {
@@ -53,6 +56,10 @@
       }
     }
 
+
+//=============== GAMEPLAY STUFF ===============//
+//TODO: Combat/HP system, inventory system, weapons, healing food/potions
+
     const gameWorld = {
       bar: {
         image: "img/bar.jpg",
@@ -60,13 +67,25 @@
           {
             label: 'Drink a Beer',
             action: () => {
-              console.log('Drinking beer')
+              gameState.beersDrunk+=1
+              console.log('Drinking beer #' + gameState.beersDrunk)
+              if (gameState.beersDrunk > 6){
+                console.log("You probably shouldn't drink any more.")
+              }
+              //TODO: health drain after 10 drinks, death at 15
             }
           },
           {
             label: 'Shout at Man',
             action: () => {
               console.log('Shouting')
+            }
+          },
+          {
+            label: 'Look around',
+            action: () => {
+              console.log("You're at the bar. Go have a drink, mate!")
+              //TODO: room examine text
             }
           },
           {
@@ -84,6 +103,69 @@
             label: 'Go for a drink',
             action: () => {
               GameManager.setRoom(gameWorld.bar)
+            }
+          },
+          {
+          label: 'Look around',
+            action: () => {
+              console.log("You're at the town square.")
+              //TODO: room examine text
+            }
+          },
+          {
+            label: 'Leave town',
+            action: () => {
+              GameManager.setRoom(gameWorld.forest)
+            }
+          },
+        ]
+      },
+      forest: {
+        image: "img/forest.jpg",
+        actions: [
+          {
+            label: 'Explore deeper',
+            action: () => {
+              GameManager.setRoom(gameWorld.deepforest)
+            }
+          },
+          {
+          label: 'Look around',
+            action: () => {
+              console.log("You're in a forest.")
+              //TODO: room examine text
+            }
+          },
+          {
+            label: 'Enter town',
+            action: () => {
+              GameManager.setRoom(gameWorld.townsquare)
+            }
+          }
+        ]
+      },
+      deepforest: {
+        image: "img/deepforest.jpg",
+        actions: [
+          {
+            label: 'Explore even deeper...',
+            action: () => {
+              GameManager.setRoom(gameWorld.deepforest)
+              //eaten by grue?
+              //death screen here?
+            }
+          },
+          {
+          label: 'Look around',
+            action: () => {
+              console.log("You're in a dark forest.")
+              //TODO: room examine text
+            }
+          },
+          {
+            label: 'Go back to safety',
+            action: () => {
+              GameManager.setRoom(gameWorld.forest)
             }
           }
         ]
