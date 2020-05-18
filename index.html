@@ -11,17 +11,17 @@
 
 <body id="gameRoot">
 
-  <p id="welcome">Welcome to Browser Adventure!</p>
+  <!--<p id="welcome">Welcome to Browser Adventure!</p> -->
 
-  <img id="themeImage" src="img/bar.jpg" alt="Background Image">
+  <img id="themeImage" src="img/menu.jpg" alt="Background Image">
   <br />
-  
+
   <script>
 
 
-//=============== GAME ENGINE ===============//
+    //=============== GAME ENGINE ===============//
     const gameState = {
-      currentLocation: 'bar',
+      currentLocation: 'menu',
       beersDrunk: 0
     }
 
@@ -57,19 +57,65 @@
     }
 
 
-//=============== GAMEPLAY STUFF ===============//
-//TODO: Combat/HP system, inventory system, weapons, healing food/potions
+    //=============== GAMEPLAY STUFF ===============//
+    //TODO: Combat/HP system, inventory system, weapons, healing food/potions
 
     const gameWorld = {
+      menu: {
+        image: "img/menu.jpg",
+        actions: [
+          {
+            label: 'New game',
+            action: () => {
+              GameManager.setRoom(gameWorld.bar)
+            }
+          },
+          {
+            label: 'Load game',
+            action: () => {
+              console.log("just kidding, saving and loading aren't implemented yet")
+            }
+          },
+          {
+            label: 'Options',
+            action: () => {
+              console.log("just kidding, no options either")
+            }
+          },
+          {
+            label: 'Credits',
+            action: () => {
+              GameManager.setRoom(gameWorld.credits)
+            }
+          },
+          {
+            label: 'Exit',
+            action: () => {
+              closeWindow()
+            }
+          }
+        ]
+      },
+      credits: {
+        image: "img/credits.jpg",
+        actions: [
+          {
+            label: 'Back to Main Menu',
+            action: () => {
+              GameManager.setRoom(gameWorld.menu)
+            }
+          }
+        ]
+      },
       bar: {
         image: "img/bar.jpg",
         actions: [
           {
             label: 'Drink a Beer',
             action: () => {
-              gameState.beersDrunk+=1
+              gameState.beersDrunk += 1
               console.log('Drinking beer #' + gameState.beersDrunk)
-              if (gameState.beersDrunk > 6){
+              if (gameState.beersDrunk > 6) {
                 console.log("You probably shouldn't drink any more.")
               }
               //TODO: health drain after 10 drinks, death at 15
@@ -89,9 +135,15 @@
             }
           },
           {
-            label: 'Leave',
+            label: 'Leave Bar',
             action: () => {
               GameManager.setRoom(gameWorld.townsquare)
+            }
+          },
+          {
+            label: 'Save & Quit',
+            action: () => {
+              GameManager.setRoom(gameWorld.menu)
             }
           }
         ]
@@ -106,7 +158,7 @@
             }
           },
           {
-          label: 'Look around',
+            label: 'Look around',
             action: () => {
               console.log("You're at the town square.")
               //TODO: room examine text
@@ -118,6 +170,12 @@
               GameManager.setRoom(gameWorld.forest)
             }
           },
+          {
+            label: 'Save & Quit',
+            action: () => {
+              GameManager.setRoom(gameWorld.menu)
+            }
+          }
         ]
       },
       forest: {
@@ -130,7 +188,7 @@
             }
           },
           {
-          label: 'Look around',
+            label: 'Look around',
             action: () => {
               console.log("You're in a forest.")
               //TODO: room examine text
@@ -140,6 +198,12 @@
             label: 'Enter town',
             action: () => {
               GameManager.setRoom(gameWorld.townsquare)
+            }
+          },
+          {
+            label: 'Save & Quit',
+            action: () => {
+              GameManager.setRoom(gameWorld.menu)
             }
           }
         ]
@@ -156,7 +220,7 @@
             }
           },
           {
-          label: 'Look around',
+            label: 'Look around',
             action: () => {
               console.log("You're in a dark forest.")
               //TODO: room examine text
@@ -167,6 +231,12 @@
             action: () => {
               GameManager.setRoom(gameWorld.forest)
             }
+          },
+          {
+            label: 'Save & Quit',
+            action: () => {
+              GameManager.setRoom(gameWorld.menu)
+            }
           }
         ]
       }
@@ -174,6 +244,12 @@
 
     function startGame() {
       GameManager.setRoom(gameWorld[gameState.currentLocation])
+    }
+
+    function closeWindow() {
+      if (confirm("Exit Browser Adventure?")) {
+        window.close()
+      }
     }
 
     document.onload = startGame();
