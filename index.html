@@ -22,7 +22,8 @@
     //=============== GAME ENGINE ===============//
     const gameState = {
       currentLocation: 'menu',
-      beersDrunk: 0
+      beersDrunk: 0,
+      playerHealth: 50
     }
 
     const UI = {
@@ -57,9 +58,57 @@
     }
 
 
+    //Event System
+    class Events {
+      static bus = {}
+
+      static register(eventName, func) {
+        const event = this.bus[eventName]
+        if (!event) {
+          this.bus[eventName] = []
+        }
+        this.bus[eventName].push(func)
+      }
+
+      static emit(eventName) {
+        const event = this.bus[eventName]
+        if (!event) {
+          return
+        }
+        event.forEach(listener => {
+          listener()
+        })
+      }
+    }
+
+    Events.register("Drink", () => {
+      gameState.beersDrunk += 1
+    })
+
+    Events.register("Drink", () => {
+      console.log('Drinking beer #' + gameState.beersDrunk)
+    })
+
+    Events.register("Drink", () => {
+      if (gameState.beersDrunk > 6) {
+        Events.emit("PlayerGettingTipsy")
+      }
+    })
+
+    Events.register("Drink", () => {
+      gameState.playerHealth += 10
+    })
+
+    Events.register("PlayerGettingTipsy", () => {
+      console.log("You probably shouldn't drink any more...")
+    })
+
+    //TODO: health drain after 10 drinks, death at 15
+
+  
+
     //=============== GAMEPLAY STUFF ===============//
     //TODO: Combat/HP system, inventory system, weapons, healing food/potions
-
     const gameWorld = {
       menu: {
         image: "img/menu.jpg",
@@ -90,9 +139,7 @@
           },
           {
             label: 'Exit',
-            action: () => {
-              closeWindow()
-            }
+            action: () => closeWindow()
           }
         ]
       },
@@ -112,14 +159,7 @@
         actions: [
           {
             label: 'Drink a Beer',
-            action: () => {
-              gameState.beersDrunk += 1
-              console.log('Drinking beer #' + gameState.beersDrunk)
-              if (gameState.beersDrunk > 6) {
-                console.log("You probably shouldn't drink any more.")
-              }
-              //TODO: health drain after 10 drinks, death at 15
-            }
+            action: () => Events.emit('Drink')
           },
           {
             label: 'Shout at Man',

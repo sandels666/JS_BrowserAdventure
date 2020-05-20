@@ -1,0 +1,74 @@
+
+----Plans/ideas for Browser Adventure----
+
+
+Combat system
+
+    Weapons
+        Daggers
+        1h/2h Swords
+        Maces
+        Axes
+        Bows?
+        Unarmed
+        Shields
+
+    Attack styles
+        Stab
+        Slash
+        Crush
+        Accurate/Rapid for bows
+        Punch/Kick for unarmed
+
+    Changeable attack styles
+        Buttons: "Stab attack" "Slash attack" etc.
+
+    Correct attack style with correct wep = extra damage/accuracy
+        e.g. Crush >> Stab with maces, Stab > Slash >> Crush with daggers
+
+    Enemies have weaknesses vs different attack styles / weapons
+        Skeletons resistant to Stab & Slash, weak to Crush
+        Chainmail armor resistant to slash & crush, weak to stab and ranged
+        Unarmored human weak to all
+
+    Status effects
+        Poison (x damage per turn for y turns)
+        Stun (can't attack for x turns)
+        Knockout with FINISH HIM button appearing? :D
+
+    Defending
+        Choose between dodge, parry, block (/w shield), nothing
+        Different chances for different defense styles with different armor/weapons
+            Heavy armor = dodging less likely to succeed
+            1h sword/dagger = parry more likely to succeed
+            Shield = able to block, chance depending of the shield material/type
+
+
+
+Magic system
+
+    Simple spells obtainable from quests, monster loot (e.g. Scroll of Fireball)
+        Teaches you a certain spell that you can then use in Combat
+            Button: Cast Fireball
+
+        Requires Mana to use
+            Mana boosting items
+            Staves having unlimited casts?
+            Mana regens by resting/sleeping or with potions?
+
+
+Quests
+
+    Simple fight Quests
+        Monster lurks in the forest, blocking off a path
+        -> go defeat it, unlocks new area
+
+        Evil wizard occupying a tower
+        -> acquire/make a key or smash the door, climb the stairs, kill wizard for loot
+
+
+
+References to other games
+
+    Quests to kill strigas etc.
+    Dark area with a grue, needs light (lantern, torch) to pass without being eaten
