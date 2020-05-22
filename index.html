@@ -20,6 +20,7 @@
 
 
     //=============== GAME ENGINE ===============//
+
     const gameState = {
       currentLocation: 'menu',
       beersDrunk: 0,
@@ -70,16 +71,18 @@
         this.bus[eventName].push(func)
       }
 
-      static emit(eventName) {
+      static emit(eventName, ...params) {
         const event = this.bus[eventName]
         if (!event) {
           return
         }
         event.forEach(listener => {
-          listener()
+          listener(...params)
         })
       }
     }
+
+
 
     Events.register("Drink", () => {
       gameState.beersDrunk += 1
@@ -90,25 +93,44 @@
     })
 
     Events.register("Drink", () => {
-      if (gameState.beersDrunk > 6) {
+      if (gameState.beersDrunk > 7) {
         Events.emit("PlayerGettingTipsy")
       }
     })
 
     Events.register("Drink", () => {
-      gameState.playerHealth += 10
+      if (gameState.beersDrunk > 10) {
+        Events.emit("PlayerTakesDamage", 5)
+      }
     })
 
     Events.register("PlayerGettingTipsy", () => {
       console.log("You probably shouldn't drink any more...")
     })
 
-    //TODO: health drain after 10 drinks, death at 15
+    Events.register("PlayerDeath", () => {
+      console.log("L2P fucken noob :)")
+      GameManager.setRoom(gameWorld.death)
+    })
+
+    Events.register("NewGame", () => {
+      gameState.beersDrunk = 0
+      gameState.playerHealth = 50
+    })
+
+    Events.register("PlayerTakesDamage", (damage) => {
+      gameState.playerHealth -= damage
+      console.log("HP = " + gameState.playerHealth)
+        if (gameState.playerHealth < 1){
+          Events.emit("PlayerDeath")
+        }
+    })
 
   
 
     //=============== GAMEPLAY STUFF ===============//
-    //TODO: Combat/HP system, inventory system, weapons, healing food/potions
+    //TODO: Combat system, inventory system, weapons, healing food/potions
+    //TODO: PLAYABLE CLASS SYSTEM
     const gameWorld = {
       menu: {
         image: "img/menu.jpg",
@@ -116,6 +138,7 @@
           {
             label: 'New game',
             action: () => {
+              Events.emit("NewGame")
               GameManager.setRoom(gameWorld.bar)
             }
           },
@@ -148,9 +171,16 @@
         actions: [
           {
             label: 'Back to Main Menu',
-            action: () => {
-              GameManager.setRoom(gameWorld.menu)
-            }
+            action: () => mainMenu()
+          }
+        ]
+      },
+      death: {
+        image: "img/death.jpg",
+        actions: [
+          {
+            label: 'Back to Main Menu',
+            action: () => mainMenu()
           }
         ]
       },
@@ -182,9 +212,7 @@
           },
           {
             label: 'Save & Quit',
-            action: () => {
-              GameManager.setRoom(gameWorld.menu)
-            }
+            action: () => mainMenu()
           }
         ]
       },
@@ -212,9 +240,7 @@
           },
           {
             label: 'Save & Quit',
-            action: () => {
-              GameManager.setRoom(gameWorld.menu)
-            }
+            action: () => mainMenu()
           }
         ]
       },
@@ -242,9 +268,7 @@
           },
           {
             label: 'Save & Quit',
-            action: () => {
-              GameManager.setRoom(gameWorld.menu)
-            }
+            action: () => mainMenu()
           }
         ]
       },
@@ -253,11 +277,7 @@
         actions: [
           {
             label: 'Explore even deeper...',
-            action: () => {
-              GameManager.setRoom(gameWorld.deepforest)
-              //eaten by grue?
-              //death screen here?
-            }
+            action: () => Events.emit("PlayerDeath")
           },
           {
             label: 'Look around',
@@ -274,9 +294,7 @@
           },
           {
             label: 'Save & Quit',
-            action: () => {
-              GameManager.setRoom(gameWorld.menu)
-            }
+            action: () => mainMenu()
           }
         ]
       }
@@ -290,6 +308,12 @@
       if (confirm("Exit Browser Adventure?")) {
         window.close()
       }
+    }
+
+    function mainMenu(){
+      GameManager.setRoom(gameWorld.menu)
+      //save game?
+      console.log(gameState.playerHealth)
     }
 
     document.onload = startGame();

@@ -71,4 +71,6 @@ Quests
 References to other games
 
     Quests to kill strigas etc.
+    Weapons called Rune Scimitar, Dharok's Greataxe etc.
+    A simple quest from RS?
     Dark area with a grue, needs light (lantern, torch) to pass without being eaten
