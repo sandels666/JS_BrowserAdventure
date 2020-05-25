@@ -24,7 +24,18 @@
     const gameState = {
       currentLocation: 'menu',
       beersDrunk: 0,
-      playerHealth: 50
+      playerHealth: 0,
+      playerMana: 0,
+      playerDodgeChance: 0,
+      playerClass: ''
+    }
+
+    const GameConstants = {
+      startLocation: 'menu',
+      startPlayerHealth: 100,
+      startPlayerMana: 100,
+      startPlayerDodgeChance: 10,
+      startPlayerBeersDrunk: 0
     }
 
     const UI = {
@@ -53,8 +64,8 @@
 
     const GameManager = {
       setRoom: (room) => {
-        UI.setThemeImage(room.image)
-        UI.setThemeButtons(room.actions)
+        Events.emit("RoomChanges", room)
+        //TODO: change gameState.currentLocation
       }
     }
 
@@ -100,7 +111,7 @@
 
     Events.register("Drink", () => {
       if (gameState.beersDrunk > 10) {
-        Events.emit("PlayerTakesDamage", 5)
+        Events.emit("PlayerTakesDamage", 10)
       }
     })
 
@@ -108,14 +119,16 @@
       console.log("You probably shouldn't drink any more...")
     })
 
+
+
     Events.register("PlayerDeath", () => {
       console.log("L2P fucken noob :)")
       GameManager.setRoom(gameWorld.death)
     })
 
     Events.register("NewGame", () => {
-      gameState.beersDrunk = 0
-      gameState.playerHealth = 50
+      gameState.beersDrunk = GameConstants.startPlayerBeersDrunk
+      gameState.playerHealth = GameConstants.startPlayerHealth
     })
 
     Events.register("PlayerTakesDamage", (damage) => {
@@ -126,11 +139,18 @@
         }
     })
 
-  
+    Events.register("RoomChanges", (room) => {
+      UI.setThemeImage(room.image)
+      UI.setThemeButtons(room.actions)
+      gameState.currentLocation = room
+    })
+
+
+
 
     //=============== GAMEPLAY STUFF ===============//
     //TODO: Combat system, inventory system, weapons, healing food/potions
-    //TODO: PLAYABLE CLASS SYSTEM
+    //TODO: Improve class system
     const gameWorld = {
       menu: {
         image: "img/menu.jpg",
@@ -139,7 +159,7 @@
             label: 'New game',
             action: () => {
               Events.emit("NewGame")
-              GameManager.setRoom(gameWorld.bar)
+              GameManager.setRoom(gameWorld.chooseclass)
             }
           },
           {
@@ -166,12 +186,48 @@
           }
         ]
       },
+      chooseclass: {
+        image: "img/chooseclass.jpg",
+        actions: [
+          {
+            label: 'Warrior',
+            action: () => {
+              gameState.playerClass = "warrior"
+              gameState.playerHealth = GameConstants.startPlayerHealth * 1.5
+              gameState.playerMana = GameConstants.startPlayerMana * 0.5
+              //TODO: warrior gear, parry/block chance
+              GameManager.setRoom(gameWorld.bar)
+            }
+          },
+          {
+            label: 'Rogue',
+            action: () => {
+              gameState.playerClass = "rogue"
+              gameState.playerHealth = GameConstants.startPlayerHealth * 1
+              gameState.playerMana = GameConstants.startPlayerMana * 0.7
+              gameState.playerDodgeChance = GameConstants.startPlayerDodgeChance * 2
+              //TODO: rogue gear
+              GameManager.setRoom(gameWorld.bar)
+            }
+          },
+          {
+            label: 'Wizard',
+            action: () => {
+              gameState.playerClass = "wizard"
+              gameState.playerHealth = GameConstants.startPlayerHealth * 0.9
+              gameState.playerMana = GameConstants.startPlayerMana * 2
+              //TODO: wizard gear
+              GameManager.setRoom(gameWorld.bar)
+            }
+          }
+        ]
+      },
       credits: {
         image: "img/credits.jpg",
         actions: [
           {
             label: 'Back to Main Menu',
-            action: () => mainMenu()
+            action: () => GameManager.setRoom(gameWorld.menu)
           }
         ]
       },
@@ -180,7 +236,7 @@
         actions: [
           {
             label: 'Back to Main Menu',
-            action: () => mainMenu()
+            action: () => GameManager.setRoom(gameWorld.menu)
           }
         ]
       },
@@ -212,7 +268,7 @@
           },
           {
             label: 'Save & Quit',
-            action: () => mainMenu()
+            action: () => GameManager.setRoom(gameWorld.menu)
           }
         ]
       },
@@ -240,7 +296,7 @@
           },
           {
             label: 'Save & Quit',
-            action: () => mainMenu()
+            action: () => GameManager.setRoom(gameWorld.menu)
           }
         ]
       },
@@ -268,7 +324,7 @@
           },
           {
             label: 'Save & Quit',
-            action: () => mainMenu()
+            action: () => GameManager.setRoom(gameWorld.menu)
           }
         ]
       },
@@ -294,26 +350,20 @@
           },
           {
             label: 'Save & Quit',
-            action: () => mainMenu()
+            action: () => GameManager.setRoom(gameWorld.menu)
           }
         ]
       }
     }
 
     function startGame() {
-      GameManager.setRoom(gameWorld[gameState.currentLocation])
+      GameManager.setRoom(gameWorld[GameConstants.startLocation])
     }
 
     function closeWindow() {
       if (confirm("Exit Browser Adventure?")) {
         window.close()
       }
-    }
-
-    function mainMenu(){
-      GameManager.setRoom(gameWorld.menu)
-      //save game?
-      console.log(gameState.playerHealth)
     }
 
     document.onload = startGame();
