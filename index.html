@@ -15,6 +15,8 @@
 
   <img id="themeImage" src="img/menu.jpg" alt="Background Image">
   <br />
+  <p id="themeDescription"></p>
+  <br />
 
   <script>
 
@@ -22,7 +24,7 @@
     //=============== GAME ENGINE ===============//
 
     const gameState = {
-      currentLocation: 'menu',
+      currentLocation: '',
       beersDrunk: 0,
       playerHealth: 0,
       playerMana: 0,
@@ -59,13 +61,25 @@
           myButton.addEventListener('click', action.action)
           bodyElement.append(myButton)
         })
+      },
+      setThemeDescription: (description) => {
+        document.getElementById('themeDescription').innerHTML = description
+      },
+      addToThemeDescription: (newDescription) => {
+        var oldDesc = document.getElementById('themeDescription').innerHTML
+        document.getElementById('themeDescription').innerHTML = oldDesc + "<br>" + newDescription
       }
     }
 
     const GameManager = {
       setRoom: (room) => {
         Events.emit("RoomChanges", room)
-        //TODO: change gameState.currentLocation
+      },
+      setDescription: (description) => {
+        Events.emit("DescriptionChanges", description)
+      },
+      addToDescription: (newDescription) => {
+        Events.emit("DescriptionAdds", newDescription)
       }
     }
 
@@ -100,29 +114,25 @@
     })
 
     Events.register("Drink", () => {
-      console.log('Drinking beer #' + gameState.beersDrunk)
+      GameManager.setDescription('Drinking beer #' + gameState.beersDrunk)
     })
 
     Events.register("Drink", () => {
       if (gameState.beersDrunk > 7) {
         Events.emit("PlayerGettingTipsy")
       }
-    })
-
-    Events.register("Drink", () => {
       if (gameState.beersDrunk > 10) {
         Events.emit("PlayerTakesDamage", 10)
       }
     })
 
     Events.register("PlayerGettingTipsy", () => {
-      console.log("You probably shouldn't drink any more...")
+      GameManager.addToDescription("You probably shouldn't drink any more...")
     })
 
 
 
     Events.register("PlayerDeath", () => {
-      console.log("L2P fucken noob :)")
       GameManager.setRoom(gameWorld.death)
     })
 
@@ -142,7 +152,16 @@
     Events.register("RoomChanges", (room) => {
       UI.setThemeImage(room.image)
       UI.setThemeButtons(room.actions)
+      UI.setThemeDescription(room.description)
       gameState.currentLocation = room
+    })
+
+    Events.register("DescriptionChanges", (description) => {
+      UI.setThemeDescription(description)
+    })
+
+    Events.register("DescriptionAdds", (newDescription) => {
+      UI.addToThemeDescription(newDescription)
     })
 
 
@@ -154,6 +173,7 @@
     const gameWorld = {
       menu: {
         image: "img/menu.jpg",
+        description: "Welcome to Browser Adventure!",
         actions: [
           {
             label: 'New game',
@@ -188,6 +208,7 @@
       },
       chooseclass: {
         image: "img/chooseclass.jpg",
+        description: "Choose a class! <br/><br/> Warriors have more health, Rogues have a higher dodge chance, and Wizards have more mana.",
         actions: [
           {
             label: 'Warrior',
@@ -224,6 +245,7 @@
       },
       credits: {
         image: "img/credits.jpg",
+        description: "Thanks for playing! -Santeri",
         actions: [
           {
             label: 'Back to Main Menu',
@@ -233,6 +255,7 @@
       },
       death: {
         image: "img/death.jpg",
+        description: "Oh dear, you're dead! Learn to play, noob.",
         actions: [
           {
             label: 'Back to Main Menu',
@@ -242,6 +265,7 @@
       },
       bar: {
         image: "img/bar.jpg",
+        description: "You're sitting at a local bar.",
         actions: [
           {
             label: 'Drink a Beer',
@@ -250,14 +274,13 @@
           {
             label: 'Shout at Man',
             action: () => {
-              console.log('Shouting')
+              GameManager.setDescription("You yell: &quot;Oi! What arr ye lookin' at!&quot; <br> The man doesn't seem to like it...")
             }
           },
           {
             label: 'Look around',
             action: () => {
-              console.log("You're at the bar. Go have a drink, mate!")
-              //TODO: room examine text
+              GameManager.setDescription(gameWorld.bar.description)
             }
           },
           {
@@ -274,6 +297,7 @@
       },
       townsquare: {
         image: "img/townsquare.jpg",
+        description: "You're at the town square. There's a bar next to you, and a path leading out of town.",
         actions: [
           {
             label: 'Go for a drink',
@@ -284,8 +308,7 @@
           {
             label: 'Look around',
             action: () => {
-              console.log("You're at the town square.")
-              //TODO: room examine text
+              GameManager.setDescription(gameWorld.townsquare.description)
             }
           },
           {
@@ -302,6 +325,7 @@
       },
       forest: {
         image: "img/forest.jpg",
+        description: "You're in a forest. A path leads to a nearby town, and another deeper into the forest.",
         actions: [
           {
             label: 'Explore deeper',
@@ -312,8 +336,7 @@
           {
             label: 'Look around',
             action: () => {
-              console.log("You're in a forest.")
-              //TODO: room examine text
+              GameManager.setDescription(gameWorld.forest.description)
             }
           },
           {
@@ -330,6 +353,7 @@
       },
       deepforest: {
         image: "img/deepforest.jpg",
+        description: "You're in a dark, ominous forest. Maybe you should turn back...",
         actions: [
           {
             label: 'Explore even deeper...',
@@ -338,8 +362,7 @@
           {
             label: 'Look around',
             action: () => {
-              console.log("You're in a dark forest.")
-              //TODO: room examine text
+              GameManager.setDescription(gameWorld.deepforest.description)
             }
           },
           {
