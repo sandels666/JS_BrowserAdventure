@@ -29,7 +29,8 @@
       playerHealth: 0,
       playerMana: 0,
       playerDodgeChance: 0,
-      playerClass: ''
+      playerClass: '',
+      playerGold: 0
     }
 
     const GameConstants = {
@@ -37,7 +38,9 @@
       startPlayerHealth: 100,
       startPlayerMana: 100,
       startPlayerDodgeChance: 10,
-      startPlayerBeersDrunk: 0
+      startPlayerBeersDrunk: 0,
+      startPlayerGold: 50,
+      beerPrice: 2
     }
 
     const UI = {
@@ -114,15 +117,20 @@
     })
 
     Events.register("Drink", () => {
+      gameState.playerGold -= GameConstants.beerPrice
+    })
+
+    Events.register("Drink", () => {
       GameManager.setDescription('Drinking beer #' + gameState.beersDrunk)
     })
 
     Events.register("Drink", () => {
+      Events.emit("PrintPlayerGold")
       if (gameState.beersDrunk > 7) {
         Events.emit("PlayerGettingTipsy")
       }
       if (gameState.beersDrunk > 10) {
-        Events.emit("PlayerTakesDamage", 10)
+        Events.emit("PlayerTakesDamage", 10, "Alcohol")
       }
     })
 
@@ -132,21 +140,29 @@
 
 
 
-    Events.register("PlayerDeath", () => {
+    Events.register("PrintPlayerGold", () => {
+      GameManager.addToDescription("You have " + gameState.playerGold + " gold left.")
+    })
+
+    Events.register("PlayerDeath", (deathReason) => {
       GameManager.setRoom(gameWorld.death)
+      if (deathReason) {
+        UI.addToThemeDescription("You were killed by: " + deathReason)
+      }
     })
 
     Events.register("NewGame", () => {
       gameState.beersDrunk = GameConstants.startPlayerBeersDrunk
       gameState.playerHealth = GameConstants.startPlayerHealth
+      gameState.playerGold = GameConstants.startPlayerGold
     })
 
-    Events.register("PlayerTakesDamage", (damage) => {
+    Events.register("PlayerTakesDamage", (damage, damageReason) => {
       gameState.playerHealth -= damage
       console.log("HP = " + gameState.playerHealth)
-        if (gameState.playerHealth < 1){
-          Events.emit("PlayerDeath")
-        }
+      if (gameState.playerHealth < 1) {
+        Events.emit("PlayerDeath", damageReason)
+      }
     })
 
     Events.register("RoomChanges", (room) => {
@@ -170,6 +186,7 @@
     //=============== GAMEPLAY STUFF ===============//
     //TODO: Combat system, inventory system, weapons, healing food/potions
     //TODO: Improve class system
+    //TODO: Shops, currency
     const gameWorld = {
       menu: {
         image: "img/menu.jpg",
@@ -185,13 +202,13 @@
           {
             label: 'Load game',
             action: () => {
-              console.log("just kidding, saving and loading aren't implemented yet")
+              GameManager.setDescription("Sorry, loading a game doesn't work yet!")
             }
           },
           {
             label: 'Options',
             action: () => {
-              console.log("just kidding, no options either")
+              GameManager.setDescription("Sorry, there's no options yet!")
             }
           },
           {
@@ -268,8 +285,16 @@
         description: "You're sitting at a local bar.",
         actions: [
           {
-            label: 'Drink a Beer',
-            action: () => Events.emit('Drink')
+            label: "Buy a Beer (" + GameConstants.beerPrice + " gold)",
+            action: () => {
+              //checking if player has enough gold
+              if (gameState.playerGold >= GameConstants.beerPrice) {
+                Events.emit('Drink')
+              }
+              else {
+                GameManager.setDescription("You can't afford that!")
+              }
+            }
           },
           {
             label: 'Shout at Man',
@@ -357,7 +382,7 @@
         actions: [
           {
             label: 'Explore even deeper...',
-            action: () => Events.emit("PlayerDeath")
+            action: () => Events.emit("PlayerDeath", "Grue")
           },
           {
             label: 'Look around',
