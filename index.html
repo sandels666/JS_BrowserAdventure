@@ -181,12 +181,132 @@
     })
 
 
+    function getLootRoll(entity) {
+      const roll = Math.random()
+      const succesfulLoot = entity.loot.filter(lootOption => lootOption.chance >= roll)
+      return succesfulLoot.map(lootOption => lootOption.item)
+    }
+
+
+    //=============== ENEMIES ===============//
+
+    //default values in function declaration paranthesis
+    function createSkeleton(name = "Skeleton", initialHealth = 50, weapon = "bronzedagger", loot = [
+      {
+        item: "bones",
+        dropchance: 1.00
+      }
+    ]) {
+      return {
+        name: name,
+        health: initialHealth,
+        weapon: weapon,
+        loot: loot
+      }
+    }
+
+
+
+    //=============== ITEM STATS ===============//
+
+    const Items = {
+      ironsword: {
+        name: "Iron sword",
+        damage: 10,
+        value: 10,
+        weight: 3,
+      },
+      healthpotion: {
+        name: "Health potion",
+        value: 15,
+        weight: 0.5,
+      },
+      bones: {
+        name: "Bones",
+        value: 1,
+        weight: 5,
+      }
+    }
+
+
 
 
     //=============== GAMEPLAY STUFF ===============//
-    //TODO: Combat system, inventory system, weapons, healing food/potions
+    //TODO: Combat system, inventory system, healing food/potions
     //TODO: Improve class system
     //TODO: Shops, currency
+
+    const skeleton1 = createSkeleton(undefined, 30, undefined, undefined)
+    const skeleton2 = createSkeleton("Andy", undefined, "ironsword", [
+      {
+        item: "ironsword",
+        dropchance: 0.90
+      },
+      {
+        item: "healthpotion",
+        dropchance: 0.50
+      },
+      {
+        item: "bones",
+        dropchance: 1.00
+      }
+    ])
+
+    const lootFromSkeleton1 = getLootRoll(skeleton1)
+
+
+    // const enemies = {
+    //   skeleton: {
+    //     name: "Skeleton",
+    //     HP: 30,
+    //     mana: 30,
+    //     weapon: "Bronze dagger",
+    //     loot: [
+    //       {
+    //         name: "Iron sword",
+    //         damage: 10,
+    //         value: 10,
+    //         weight: 3,
+    //         dropchance: 0.9
+    //       },
+    //       {
+    //         name: "Health potion",
+    //         value: 15,
+    //         weight: 0.5,
+    //         dropchance: 0.5
+    //       },
+    //       {
+    //         name: "Bones",
+    //         value: 1,
+    //         weight: 5,
+    //         dropchance: 1
+    //       }
+    //     ]
+    //   },
+    //   giantspider: {
+    //     name: "Giant Spider",
+    //     HP: 15,
+    //     mana: 10,
+    //     loot: [
+    //       {
+    //         name: "Spider carcass",
+    //         value: 1,
+    //         weight: 5,
+    //         dropchance: 1
+    //       },
+    //       {
+    //         name: "Spider venom",
+    //         value: 3,
+    //         weight: 0.5,
+    //         dropchance: 0.5
+    //       }
+    //     ]
+    //   }
+    // }
+
+
+
+
     const gameWorld = {
       menu: {
         image: "img/menu.jpg",
