@@ -30,7 +30,8 @@
       playerMana: 0,
       playerDodgeChance: 0,
       playerClass: '',
-      playerGold: 0
+      playerGold: 0,
+      playerItems: []
     }
 
     const GameConstants = {
@@ -40,6 +41,7 @@
       startPlayerDodgeChance: 10,
       startPlayerBeersDrunk: 0,
       startPlayerGold: 50,
+      startPlayerItems: ['healthpotion'],
       beerPrice: 2
     }
 
@@ -142,6 +144,20 @@
 
     Events.register("PrintPlayerGold", () => {
       GameManager.addToDescription("You have " + gameState.playerGold + " gold left.")
+      console.log(gameState.playerItems)
+    })
+
+    Events.register("PrintPlayerItems", () => {
+      GameManager.setDescription("Player's inventory:")
+      gameState.playerItems.forEach(playerItem => {
+        GameManager.addToDescription(ItemTagDictionary[playerItem].name)
+      })
+
+      //logging to console for testing
+      console.log("Player's inventory:")
+      gameState.playerItems.forEach(playerItem => {
+        console.log(ItemTagDictionary[playerItem])
+      })
     })
 
     Events.register("PlayerDeath", (deathReason) => {
@@ -154,7 +170,9 @@
     Events.register("NewGame", () => {
       gameState.beersDrunk = GameConstants.startPlayerBeersDrunk
       gameState.playerHealth = GameConstants.startPlayerHealth
+      gameState.playerMana = GameConstants.startPlayerMana
       gameState.playerGold = GameConstants.startPlayerGold
+      gameState.playerItems = GameConstants.startPlayerItems.map(a => a)
     })
 
     Events.register("PlayerTakesDamage", (damage, damageReason) => {
@@ -180,41 +198,72 @@
       UI.addToThemeDescription(newDescription)
     })
 
+    function create(itemTag, options = {}) {
+      return {
+        ...ItemTagDictionary[itemTag],
+        ...options
+      }
+    }
 
     function getLootRoll(entity) {
       const roll = Math.random()
-      const succesfulLoot = entity.loot.filter(lootOption => lootOption.chance >= roll)
+      const succesfulLoot = entity.lootTable.filter(lootOption => lootOption.chance >= roll)
       return succesfulLoot.map(lootOption => lootOption.item)
     }
 
 
-    //=============== ENEMIES ===============//
 
-    //default values in function declaration paranthesis
-    function createSkeleton(name = "Skeleton", initialHealth = 50, weapon = "bronzedagger", loot = [
-      {
-        item: "bones",
-        dropchance: 1.00
-      }
-    ]) {
-      return {
-        name: name,
-        health: initialHealth,
-        weapon: weapon,
-        loot: loot
-      }
-    }
+    //=============== ITEMS AND ENEMIES STATS ===============//
 
-
-
-    //=============== ITEM STATS ===============//
-
-    const Items = {
+    const ItemTagDictionary = {
+      //--ITEMS--//
+      bronzedagger: {
+        name: "Bronze dagger",
+        damage: 3,
+        value: 3,
+        weight: 1
+      },
+      bronzesword: {
+        name: "Bronze sword",
+        damage: 5,
+        value: 5,
+        weight: 2
+      },
+      irondagger: {
+        name: "Iron dagger",
+        damage: 8,
+        value: 8,
+        weight: 1
+      },
       ironsword: {
         name: "Iron sword",
         damage: 10,
         value: 10,
         weight: 3,
+      },
+      staff: {
+        name: "Staff",
+        damage: 3,
+        value: 5,
+        weight: 3
+      },
+      clotharmor: {
+        name: "Cloth armor",
+        armor: 2,
+        value: 10,
+        weight: 1.5,
+      },
+      leatherarmor: {
+        name: "Leather armor",
+        armor: 5,
+        value: 10,
+        weight: 3
+      },
+      ironarmor: {
+        name: "Iron armor",
+        armor: 10,
+        value: 20,
+        weight: 10
       },
       healthpotion: {
         name: "Health potion",
@@ -225,10 +274,61 @@
         name: "Bones",
         value: 1,
         weight: 5,
+      },
+      spidercarcass: {
+        name: "Spider carcass",
+        value: 2,
+        weight: 2
+      },
+      spidervenom: {
+        name: "Spider venom",
+        value: 10,
+        weight: 1
+      },
+
+      //--MONSTERS--//
+      skeleton: {
+        name: "Skeleton",
+        maxhealth: 50,
+        weaponTag: 'bronzedagger',
+        lootTable: [
+          {
+            itemTag: 'bones',
+            dropchance: 1.00
+          },
+          {
+            itemTag: 'ironsword',
+            dropchance: 0.90
+          }
+        ]
+      },
+      giantspider: {
+        name: "Giant Spider",
+        maxhealth: 30,
+        maxmana: 10,
+        lootTable: [
+          {
+            itemTag: "spidercarcass",
+            dropchance: 1.00
+          },
+          {
+            itemTag: "spidervenom",
+            dropchance: 0.5
+          }
+        ]
+      },
+      goblin: {
+        name: "Goblin",
+        maxhealth: 20,
+        maxmana: 5,
+        lootTable: [
+          {
+            itemTag: 'bones',
+            dropchance: 1.00
+          },
+        ]
       }
     }
-
-
 
 
     //=============== GAMEPLAY STUFF ===============//
@@ -236,74 +336,20 @@
     //TODO: Improve class system
     //TODO: Shops, currency
 
-    const skeleton1 = createSkeleton(undefined, 30, undefined, undefined)
-    const skeleton2 = createSkeleton("Andy", undefined, "ironsword", [
-      {
-        item: "ironsword",
-        dropchance: 0.90
-      },
-      {
-        item: "healthpotion",
-        dropchance: 0.50
-      },
-      {
-        item: "bones",
-        dropchance: 1.00
-      }
-    ])
+    //example for creating an enemy
+    const skeleton1 = create('skeleton', {
+      health: 44,
+      weapon: 'ironsword',
+      lootTable: [
+        {
+          name: 'healthpotion',
+          dropchance: 0.5
+        }
+      ]
+    })
 
+    //example for enemy dropping loot
     const lootFromSkeleton1 = getLootRoll(skeleton1)
-
-
-    // const enemies = {
-    //   skeleton: {
-    //     name: "Skeleton",
-    //     HP: 30,
-    //     mana: 30,
-    //     weapon: "Bronze dagger",
-    //     loot: [
-    //       {
-    //         name: "Iron sword",
-    //         damage: 10,
-    //         value: 10,
-    //         weight: 3,
-    //         dropchance: 0.9
-    //       },
-    //       {
-    //         name: "Health potion",
-    //         value: 15,
-    //         weight: 0.5,
-    //         dropchance: 0.5
-    //       },
-    //       {
-    //         name: "Bones",
-    //         value: 1,
-    //         weight: 5,
-    //         dropchance: 1
-    //       }
-    //     ]
-    //   },
-    //   giantspider: {
-    //     name: "Giant Spider",
-    //     HP: 15,
-    //     mana: 10,
-    //     loot: [
-    //       {
-    //         name: "Spider carcass",
-    //         value: 1,
-    //         weight: 5,
-    //         dropchance: 1
-    //       },
-    //       {
-    //         name: "Spider venom",
-    //         value: 3,
-    //         weight: 0.5,
-    //         dropchance: 0.5
-    //       }
-    //     ]
-    //   }
-    // }
-
 
 
 
@@ -348,33 +394,37 @@
         description: "Choose a class! <br/><br/> Warriors have more health, Rogues have a higher dodge chance, and Wizards have more mana.",
         actions: [
           {
-            label: 'Warrior',
+            label: "Warrior",
             action: () => {
-              gameState.playerClass = "warrior"
-              gameState.playerHealth = GameConstants.startPlayerHealth * 1.5
-              gameState.playerMana = GameConstants.startPlayerMana * 0.5
-              //TODO: warrior gear, parry/block chance
+              gameState.playerClass = 'warrior'
+              gameState.playerHealth *= 1.5
+              gameState.playerMana *= 0.5
+              gameState.playerItems.push('ironsword')
+              gameState.playerItems.push('ironarmor')
+              //TODO: parry/block chance
               GameManager.setRoom(gameWorld.bar)
             }
           },
           {
-            label: 'Rogue',
+            label: "Rogue",
             action: () => {
-              gameState.playerClass = "rogue"
-              gameState.playerHealth = GameConstants.startPlayerHealth * 1
-              gameState.playerMana = GameConstants.startPlayerMana * 0.7
-              gameState.playerDodgeChance = GameConstants.startPlayerDodgeChance * 2
-              //TODO: rogue gear
+              gameState.playerClass = 'rogue'
+              gameState.playerHealth *= 1
+              gameState.playerMana *= 0.7
+              gameState.playerDodgeChance *= 2
+              gameState.playerItems.push('irondagger')
+              gameState.playerItems.push('leatherarmor')
               GameManager.setRoom(gameWorld.bar)
             }
           },
           {
-            label: 'Wizard',
+            label: "Wizard",
             action: () => {
-              gameState.playerClass = "wizard"
-              gameState.playerHealth = GameConstants.startPlayerHealth * 0.9
-              gameState.playerMana = GameConstants.startPlayerMana * 2
-              //TODO: wizard gear
+              gameState.playerClass = 'wizard'
+              gameState.playerHealth *= 0.9
+              gameState.playerMana *= 2
+              gameState.playerItems.push('staff')
+              gameState.playerItems.push('clotharmor')
               GameManager.setRoom(gameWorld.bar)
             }
           }
@@ -435,6 +485,10 @@
             }
           },
           {
+            label: 'Inventory',
+            action: () => Events.emit('PrintPlayerItems')
+          },
+          {
             label: 'Save & Quit',
             action: () => GameManager.setRoom(gameWorld.menu)
           }
@@ -461,6 +515,10 @@
             action: () => {
               GameManager.setRoom(gameWorld.forest)
             }
+          },
+          {
+            label: 'Inventory',
+            action: () => Events.emit('PrintPlayerItems')
           },
           {
             label: 'Save & Quit',
@@ -491,6 +549,10 @@
             }
           },
           {
+            label: 'Inventory',
+            action: () => Events.emit('PrintPlayerItems')
+          },
+          {
             label: 'Save & Quit',
             action: () => GameManager.setRoom(gameWorld.menu)
           }
@@ -515,6 +577,10 @@
             action: () => {
               GameManager.setRoom(gameWorld.forest)
             }
+          },
+          {
+            label: 'Inventory',
+            action: () => Events.emit('PrintPlayerItems')
           },
           {
             label: 'Save & Quit',
