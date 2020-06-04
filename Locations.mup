@@ -1,0 +1,549 @@
+{
+  "formatVersion": 3,
+  "id": "root",
+  "ideas": {
+    "1": {
+      "title": "Player House",
+      "id": 1,
+      "attr": {
+        "position": [
+          -102,
+          -434,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.75
+        }
+      },
+      "ideas": {}
+    },
+    "2": {
+      "title": "Bedroom",
+      "id": 3,
+      "attr": {
+        "position": [
+          -143,
+          -575,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "3": {
+      "title": "Kitchen",
+      "id": 4,
+      "attr": {
+        "position": [
+          -11,
+          -576,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "4": {
+      "title": "Town Square",
+      "id": 7,
+      "attr": {
+        "position": [
+          -90,
+          -300,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "5": {
+      "title": "Bar1",
+      "id": 8,
+      "attr": {
+        "position": [
+          -275,
+          -302,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "6": {
+      "title": "Forest_clear",
+      "id": 10,
+      "attr": {
+        "position": [
+          -88,
+          -172,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "7": {
+      "title": "Forest_fog",
+      "id": 11,
+      "attr": {
+        "position": [
+          -81,
+          -64,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "8": {
+      "title": "Cabin_fog",
+      "id": 12,
+      "attr": {
+        "position": [
+          63,
+          -63,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "9": {
+      "title": "Cabin_inside",
+      "id": 14,
+      "attr": {
+        "position": [
+          200,
+          -64,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "10": {
+      "title": "River",
+      "id": 16,
+      "attr": {
+        "position": [
+          108,
+          -173,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "11": {
+      "title": "Snowforest",
+      "id": 18,
+      "attr": {
+        "position": [
+          240,
+          -175,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "12": {
+      "title": "Snowpath",
+      "id": 19,
+      "attr": {
+        "position": [
+          422,
+          -174,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "13": {
+      "title": "Village_cliff",
+      "id": 20,
+      "attr": {
+        "position": [
+          565,
+          -174,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "14": {
+      "title": "Village_snow",
+      "id": 21,
+      "attr": {
+        "position": [
+          764,
+          -172,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "15": {
+      "title": "Bar2",
+      "id": 22,
+      "attr": {
+        "position": [
+          803,
+          -71,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "16": {
+      "title": "Bar_NPC",
+      "id": 23,
+      "attr": {
+        "position": [
+          676,
+          32,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "17": {
+      "title": "Bar_Bedroom",
+      "id": 24,
+      "attr": {
+        "position": [
+          864,
+          35,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "18": {
+      "title": "...",
+      "id": 25,
+      "attr": {
+        "position": [
+          932,
+          -172,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "19": {
+      "title": "Castle",
+      "id": 26,
+      "attr": {
+        "position": [
+          1000,
+          -172,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "20": {
+      "title": "Castle_inside",
+      "id": 27,
+      "attr": {
+        "position": [
+          1227,
+          -175,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "21": {
+      "title": "Castle_NPC",
+      "id": 28,
+      "attr": {
+        "position": [
+          1231,
+          -305,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    },
+    "22": {
+      "title": "Castle2",
+      "id": 29,
+      "attr": {
+        "position": [
+          1109,
+          -174,
+          1
+        ],
+        "style": {
+          "fontMultiplier": 1.5
+        }
+      }
+    }
+  },
+  "title": "Player House",
+  "links": [
+    {
+      "ideaIdFrom": 1,
+      "ideaIdTo": 7,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 1,
+      "ideaIdTo": 4,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 1,
+      "ideaIdTo": 3,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 7,
+      "ideaIdTo": 8,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 7,
+      "ideaIdTo": 10,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 10,
+      "ideaIdTo": 11,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 11,
+      "ideaIdTo": 12,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 12,
+      "ideaIdTo": 14,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 10,
+      "ideaIdTo": 16,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 16,
+      "ideaIdTo": 18,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 18,
+      "ideaIdTo": 19,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 19,
+      "ideaIdTo": 20,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 20,
+      "ideaIdTo": 21,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 21,
+      "ideaIdTo": 22,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 22,
+      "ideaIdTo": 23,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 22,
+      "ideaIdTo": 24,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 21,
+      "ideaIdTo": 25,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 25,
+      "ideaIdTo": 26,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 27,
+      "ideaIdTo": 28,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 26,
+      "ideaIdTo": 29,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 29,
+      "ideaIdTo": 27,
+      "attr": {
+        "style": {
+          "color": "#707070",
+          "lineStyle": "solid",
+          "arrow": "to"
+        }
+      }
+    }
+  ]
+}
