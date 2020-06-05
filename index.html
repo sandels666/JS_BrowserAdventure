@@ -2,20 +2,18 @@
 <html>
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="reset.css">
-  <link rel="stylesheet" href="style.css">
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <link rel='stylesheet' href='reset.css'>
+  <link rel='stylesheet' href='style.css'>
   <title>Browser Adventure</title>
 </head>
 
 
-<body id="gameRoot">
+<body id='gameRoot'>
 
-  <!--<p id="welcome">Welcome to Browser Adventure!</p> -->
-
-  <img id="themeImage" src="img/menu.jpg" alt="Background Image">
+  <img id='themeImage' src='img/menu.jpg' alt='Background Image'>
   <br />
-  <p id="themeDescription"></p>
+  <p id='themeDescription'></p>
   <br />
 
   <script>
@@ -48,7 +46,7 @@
     const UI = {
       setThemeImage: (image) => {
         const imageElement = document.getElementById('themeImage')
-        imageElement.setAttribute("src", image)
+        imageElement.setAttribute('src', image)
       },
       setThemeButtons: (actions) => {
         // Clear existing buttons
@@ -56,12 +54,12 @@
         existingButtons.forEach(button => button.remove())
 
         // Find Root
-        const bodyElement = document.getElementById("gameRoot")
+        const bodyElement = document.getElementById('gameRoot')
 
         // Loop through actions
         actions.forEach(action => {
           const myButton = document.createElement('button')
-          myButton.setAttribute("class", "block action-button")
+          myButton.setAttribute('class', 'block action-button')
           myButton.innerHTML = action.label
           myButton.addEventListener('click', action.action)
           bodyElement.append(myButton)
@@ -78,13 +76,13 @@
 
     const GameManager = {
       setRoom: (room) => {
-        Events.emit("RoomChanges", room)
+        Events.emit('RoomChanges', room)
       },
       setDescription: (description) => {
-        Events.emit("DescriptionChanges", description)
+        Events.emit('DescriptionChanges', description)
       },
       addToDescription: (newDescription) => {
-        Events.emit("DescriptionAdds", newDescription)
+        Events.emit('DescriptionAdds', newDescription)
       }
     }
 
@@ -123,7 +121,7 @@
     })
 
     Events.register("Drink", () => {
-      GameManager.setDescription('Drinking beer #' + gameState.beersDrunk)
+      GameManager.setDescription("Drinking beer #" + gameState.beersDrunk)
     })
 
     Events.register("Drink", () => {
@@ -355,42 +353,42 @@
 
     const gameWorld = {
       menu: {
-        image: "img/menu.jpg",
+        image: 'img/menu.jpg',
         description: "Welcome to Browser Adventure!",
         actions: [
           {
-            label: 'New game',
+            label: "New game",
             action: () => {
-              Events.emit("NewGame")
+              Events.emit('NewGame')
               GameManager.setRoom(gameWorld.chooseclass)
             }
           },
           {
-            label: 'Load game',
+            label: "Load game",
             action: () => {
               GameManager.setDescription("Sorry, loading a game doesn't work yet!")
             }
           },
           {
-            label: 'Options',
+            label: "Options",
             action: () => {
               GameManager.setDescription("Sorry, there's no options yet!")
             }
           },
           {
-            label: 'Credits',
+            label: "Credits",
             action: () => {
               GameManager.setRoom(gameWorld.credits)
             }
           },
           {
-            label: 'Exit',
+            label: "Exit",
             action: () => closeWindow()
           }
         ]
       },
       chooseclass: {
-        image: "img/chooseclass.jpg",
+        image: 'img/chooseclass.jpg',
         description: "Choose a class! <br/><br/> Warriors have more health, Rogues have a higher dodge chance, and Wizards have more mana.",
         actions: [
           {
@@ -402,7 +400,7 @@
               gameState.playerItems.push('ironsword')
               gameState.playerItems.push('ironarmor')
               //TODO: parry/block chance
-              GameManager.setRoom(gameWorld.bar)
+              GameManager.setRoom(gameWorld.playerhome)
             }
           },
           {
@@ -414,7 +412,7 @@
               gameState.playerDodgeChance *= 2
               gameState.playerItems.push('irondagger')
               gameState.playerItems.push('leatherarmor')
-              GameManager.setRoom(gameWorld.bar)
+              GameManager.setRoom(gameWorld.playerhome)
             }
           },
           {
@@ -425,34 +423,178 @@
               gameState.playerMana *= 2
               gameState.playerItems.push('staff')
               gameState.playerItems.push('clotharmor')
-              GameManager.setRoom(gameWorld.bar)
+              GameManager.setRoom(gameWorld.playerhome)
             }
           }
         ]
       },
       credits: {
-        image: "img/credits.jpg",
+        image: 'img/credits.jpg',
         description: "Thanks for playing! -Santeri",
         actions: [
           {
-            label: 'Back to Main Menu',
+            label: "Back to Main Menu",
             action: () => GameManager.setRoom(gameWorld.menu)
           }
         ]
       },
       death: {
-        image: "img/death.jpg",
+        image: 'img/death.jpg',
         description: "Oh dear, you're dead! Learn to play, noob.",
         actions: [
           {
-            label: 'Back to Main Menu',
+            label: "Back to Main Menu",
+            action: () => GameManager.setRoom(gameWorld.menu)
+          }
+        ]
+      },
+      playerhome: {
+        image: 'img/playerhome1.png',
+        description: "You're at the entrance of your home. <br>"
+        + "You can see the kitchen ahead, and there's a set of stairs leading to the bedroom.",
+        actions: [
+          {
+            label: "Go to the kitchen",
+            action: () => {
+              GameManager.setRoom(gameWorld.playerhome_kitchen)
+            }
+          },
+          {
+            label: "Go to the bedroom",
+            action: () => {
+              GameManager.setRoom(gameWorld.playerhome_bedroom)
+            }
+          },
+          {
+            label: "Look around",
+            action: () => {
+              GameManager.setDescription(gameWorld.playerhome.description)
+            }
+          },
+          {
+            label: "Leave",
+            action: () => {
+              GameManager.setRoom(gameWorld.townsquare)
+            }
+          },
+          {
+            label: "Inventory",
+            action: () => Events.emit('PrintPlayerItems')
+          },
+          {
+            label: "Save & Quit",
+            action: () => GameManager.setRoom(gameWorld.menu)
+          }
+        ]
+      },
+      playerhome_kitchen: {
+        image: 'img/playerhome_kitchen.png',
+        description: "You're in your kitchen. <br>"
+        + "There's some food left on the table. Your home's entrance is behind you.",
+        actions: [
+          {
+            label: "Eat some food",
+            action: () => {
+              //
+            }
+          },
+          {
+            label: "Go back to the entrance",
+            action: () => {
+              GameManager.setRoom(gameWorld.playerhome)
+            }
+          },
+          {
+            label: "Look around",
+            action: () => {
+              GameManager.setDescription(gameWorld.playerhome_kitchen.description)
+            }
+          },
+          {
+            label: "Inventory",
+            action: () => Events.emit('PrintPlayerItems')
+          },
+          {
+            label: "Save & Quit",
+            action: () => GameManager.setRoom(gameWorld.menu)
+          }
+        ]
+      },
+      playerhome_bedroom: {
+        image: 'img/playerhome_bedroom.png',
+        description: "You're upstairs in your bedroom. <br>"
+        + "The bed looks comfy. There's stairs behind you leading back to the entrance of your home.",
+        actions: [
+          {
+            label: "Go to sleep",
+            action: () => {
+              //
+            }
+          },
+          {
+            label: "Go back downstairs",
+            action: () => {
+              GameManager.setRoom(gameWorld.playerhome)
+            }
+          },
+          {
+            label: "Look around",
+            action: () => {
+              GameManager.setDescription(gameWorld.playerhome_bedroom.description)
+            }
+          },
+          {
+            label: "Inventory",
+            action: () => Events.emit('PrintPlayerItems')
+          },
+          {
+            label: "Save & Quit",
+            action: () => GameManager.setRoom(gameWorld.menu)
+          }
+        ]
+      },
+      townsquare: {
+        image: 'img/townsquare1.png',
+        description: "You're at the town square. <br>"
+        + "Your home is behind you. There's a bar next to you. There's a path leading out of town.",
+        actions: [
+          {
+            label: "Go for a drink at the bar",
+            action: () => {
+              GameManager.setRoom(gameWorld.bar)
+            }
+          },
+          {
+            label: "Go home",
+            action: () => {
+              GameManager.setRoom(gameWorld.playerHome)
+            }
+          },
+          {
+            label: "Look around",
+            action: () => {
+              GameManager.setDescription(gameWorld.townsquare.description)
+            }
+          },
+          {
+            label: "Leave town",
+            action: () => {
+              GameManager.setRoom(gameWorld.forest)
+            }
+          },
+          {
+            label: "Inventory",
+            action: () => Events.emit('PrintPlayerItems')
+          },
+          {
+            label: "Save & Quit",
             action: () => GameManager.setRoom(gameWorld.menu)
           }
         ]
       },
       bar: {
-        image: "img/bar.jpg",
-        description: "You're sitting at a local bar.",
+        image: 'img/bar1.png',
+        description: "You're at a local bar.",
         actions: [
           {
             label: "Buy a Beer (" + GameConstants.beerPrice + " gold)",
@@ -467,123 +609,101 @@
             }
           },
           {
-            label: 'Shout at Man',
+            label: "Shout at bartender",
             action: () => {
               GameManager.setDescription("You yell: &quot;Oi! What arr ye lookin' at!&quot; <br> The man doesn't seem to like it...")
             }
           },
           {
-            label: 'Look around',
+            label: "Look around",
             action: () => {
               GameManager.setDescription(gameWorld.bar.description)
             }
           },
           {
-            label: 'Leave Bar',
+            label: "Leave Bar",
             action: () => {
               GameManager.setRoom(gameWorld.townsquare)
             }
           },
           {
-            label: 'Inventory',
+            label: "Inventory",
             action: () => Events.emit('PrintPlayerItems')
           },
           {
-            label: 'Save & Quit',
-            action: () => GameManager.setRoom(gameWorld.menu)
-          }
-        ]
-      },
-      townsquare: {
-        image: "img/townsquare.jpg",
-        description: "You're at the town square. There's a bar next to you, and a path leading out of town.",
-        actions: [
-          {
-            label: 'Go for a drink',
-            action: () => {
-              GameManager.setRoom(gameWorld.bar)
-            }
-          },
-          {
-            label: 'Look around',
-            action: () => {
-              GameManager.setDescription(gameWorld.townsquare.description)
-            }
-          },
-          {
-            label: 'Leave town',
-            action: () => {
-              GameManager.setRoom(gameWorld.forest)
-            }
-          },
-          {
-            label: 'Inventory',
-            action: () => Events.emit('PrintPlayerItems')
-          },
-          {
-            label: 'Save & Quit',
+            label: "Save & Quit",
             action: () => GameManager.setRoom(gameWorld.menu)
           }
         ]
       },
       forest: {
-        image: "img/forest.jpg",
-        description: "You're in a forest. A path leads to a nearby town, and another deeper into the forest.",
+        image: 'img/forest_clear.png',
+        description: "You're in a forest. <br>"
+        + "A path leads to a nearby town, and another deeper into the forest. You can also hear a river nearby. ",
         actions: [
           {
-            label: 'Explore deeper',
+            label: "Explore deeper into the forest",
             action: () => {
-              GameManager.setRoom(gameWorld.deepforest)
+              GameManager.setRoom(gameWorld.forest_fog)
             }
           },
           {
-            label: 'Look around',
+            label: "Go to the river",
+            action: () => {
+              GameManager.setRoom(gameWorld.river)
+            }
+          },
+          {
+            label: "Look around",
             action: () => {
               GameManager.setDescription(gameWorld.forest.description)
             }
           },
           {
-            label: 'Enter town',
+            label: "Enter town",
             action: () => {
               GameManager.setRoom(gameWorld.townsquare)
             }
           },
           {
-            label: 'Inventory',
+            label: "Inventory",
             action: () => Events.emit('PrintPlayerItems')
           },
           {
-            label: 'Save & Quit',
+            label: "Save & Quit",
             action: () => GameManager.setRoom(gameWorld.menu)
           }
         ]
       },
-      deepforest: {
-        image: "img/deepforest.jpg",
-        description: "You're in a dark, ominous forest. Maybe you should turn back...",
+      river: {
+        image: 'img/river.png',
+        description: "You're at the bank of a flowing river. <br>"
+        + "You can see a snowy forest far ahead of you. There's also a clear forest behind you leading into a town.",
         actions: [
           {
-            label: 'Explore even deeper...',
-            action: () => Events.emit("PlayerDeath", "Grue")
-          },
-          {
-            label: 'Look around',
+            label: "Go to snowy forest",
             action: () => {
-              GameManager.setDescription(gameWorld.deepforest.description)
+              GameManager.setRoom(snowforest)
             }
           },
           {
-            label: 'Go back to safety',
+            label: "Look around",
+            action: () => {
+              GameManager.setDescription(gameWorld.river.description)
+            }
+          },
+          {
+            label: "Go to the clear forest",
             action: () => {
               GameManager.setRoom(gameWorld.forest)
             }
           },
           {
-            label: 'Inventory',
+            label: "Inventory",
             action: () => Events.emit('PrintPlayerItems')
           },
           {
-            label: 'Save & Quit',
+            label: "Save & Quit",
             action: () => GameManager.setRoom(gameWorld.menu)
           }
         ]
