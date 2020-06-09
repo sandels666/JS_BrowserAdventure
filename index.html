@@ -273,6 +273,11 @@
         value: 1,
         weight: 5,
       },
+      batbones: {
+        name: "Bat bones",
+        value: 5,
+        weight: 1
+      },
       spidercarcass: {
         name: "Spider carcass",
         value: 2,
@@ -325,14 +330,21 @@
             dropchance: 1.00
           },
         ]
-      }
+      },
+      vampire: {
+        name: "Vampire",
+        maxhealth: 70,
+        maxmana: 50,
+        lootTable: [
+          {
+            itemTag: 'batbones',
+            dropchance: 1.00
+          },
+        ]
+      },
     }
 
 
-    //=============== GAMEPLAY STUFF ===============//
-    //TODO: Combat system, inventory system, healing food/potions
-    //TODO: Improve class system
-    //TODO: Shops, currency
 
     //example for creating an enemy
     const skeleton1 = create('skeleton', {
@@ -351,6 +363,12 @@
 
 
 
+
+    //TODO: Combat system, inventory system, healing food/potions
+    //TODO: Improve class system
+    //TODO: Shops, currency
+
+    //=============== ROOMS ===============//
     const gameWorld = {
       menu: {
         image: 'img/menu.jpg',
@@ -663,6 +681,105 @@
             label: "Enter town",
             action: () => {
               GameManager.setRoom(gameWorld.townsquare)
+            }
+          },
+          {
+            label: "Inventory",
+            action: () => Events.emit('PrintPlayerItems')
+          },
+          {
+            label: "Save & Quit",
+            action: () => GameManager.setRoom(gameWorld.menu)
+          }
+        ]
+      },
+      forest_fog: {
+        image: 'img/forest_fog.png',
+        description: "You're in a forest. It looks foggy and ominous here... <br>"
+        + "A path leads back to the forest's edge, and another even deeper into the forest. ",
+        actions: [
+          {
+            label: "Explore even deeper",
+            action: () => {
+              GameManager.setRoom(gameWorld.cabin)
+            }
+          },
+          {
+            label: "Go back to the forest's edge",
+            action: () => {
+              GameManager.setRoom(gameWorld.forest)
+            }
+          },
+          {
+            label: "Look around",
+            action: () => {
+              GameManager.setDescription(gameWorld.forest_fog.description)
+            }
+          },
+          {
+            label: "Inventory",
+            action: () => Events.emit('PrintPlayerItems')
+          },
+          {
+            label: "Save & Quit",
+            action: () => GameManager.setRoom(gameWorld.menu)
+          }
+        ]
+      },
+      cabin: {
+        image: 'img/cabin.png',
+        description: "You find a creepy cabin in the middle of the woods... <br>"
+        + "You can enter the cabin or leave.",
+        actions: [
+          {
+            label: "Enter cabin",
+            action: () => {
+              GameManager.setRoom(gameWorld.cabin_inside)
+            }
+          },
+          {
+            label: "Leave",
+            action: () => {
+              GameManager.setRoom(gameWorld.forest_fog)
+            }
+          },
+          {
+            label: "Look around",
+            action: () => {
+              GameManager.setDescription(gameWorld.cabin.description)
+            }
+          },
+          {
+            label: "Inventory",
+            action: () => Events.emit('PrintPlayerItems')
+          },
+          {
+            label: "Save & Quit",
+            action: () => GameManager.setRoom(gameWorld.menu)
+          }
+        ]
+      },
+      cabin_inside: {
+        image: 'img/cabin_inside.png',
+        description: "You abandoned all sense and entered the creepy cabin in the woods. <br>"
+        + "There's a body laying on a bed. You're not sure if it's dead or alive...",
+        actions: [
+          {
+            label: "Poke the body",
+            action: () => {
+              Events.emit("PlayerDeath", "Bloodthirsty vampire!")
+            }
+          },
+          {
+            label: "Run for your life!",
+            action: () => {
+              GameManager.setRoom(gameWorld.forest)
+            }
+          },
+          {
+            label: "Look around",
+            action: () => {
+              GameManager.setDescription(gameWorld.cabin_inside.description)
             }
           },
           {
