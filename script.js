@@ -45,13 +45,6 @@ const UI = {
       myButton.addEventListener('click', action.action)
       bodyElement.append(myButton)
     })
-  },
-  setThemeDescription: (description) => {
-    document.getElementById('themeDescription').innerHTML = description
-  },
-  addToThemeDescription: (newDescription) => {
-    var oldDesc = document.getElementById('themeDescription').innerHTML
-    document.getElementById('themeDescription').innerHTML = oldDesc + "<br>" + newDescription
   }
 }
 
@@ -71,14 +64,8 @@ const GameManager = {
     gameState.currentLocation = targetRoom
     UI.setThemeImage(targetRoom.image)
     UI.setThemeButtons(targetRoom.actions)
-    UI.setThemeDescription(targetRoom.description)
+    DescriptionManager.set(targetRoom.description)
     Events.emit('RoomChanges', gameState.currentLocation, targetRoom)
-  },
-  setDescription: (description) => {
-    Events.emit('DescriptionChanges', description)
-  },
-  addToDescription: (newDescription) => {
-    Events.emit('DescriptionAdds', newDescription)
   }
 }
 
@@ -118,6 +105,17 @@ const InventoryManager = {
   }
 }
 
+const DescriptionManager = {
+  set(description) {
+    document.getElementById('themeDescription').innerHTML = description
+  },
+  add(description) {
+    var oldDesc = document.getElementById('themeDescription').innerHTML
+    document.getElementById('themeDescription').innerHTML = oldDesc + "<br>" + description
+  }
+
+}
+
 
 //Event System
 class Events {
@@ -154,7 +152,7 @@ Events.register("Drink", () => {
 })
 
 Events.register("Drink", () => {
-  GameManager.setDescription("Drinking beer #" + gameState.beersDrunk)
+  DescriptionManager.set("Drinking beer #" + gameState.beersDrunk)
 })
 
 Events.register("Drink", () => {
@@ -168,13 +166,13 @@ Events.register("Drink", () => {
 })
 
 Events.register("PlayerGettingTipsy", () => {
-  GameManager.addToDescription("You probably shouldn't drink any more...")
+  DescriptionManager.add("You probably shouldn't drink any more...")
 })
 
 
 
 
-//======== COMBAT SYSTEM v1 =========//
+//======== COMBAT SYSTEM =========//
 Events.register("Attack", (enemy) => {
   const playerWeapon = gameState.playerWeapon
   const playerDamage = ItemTagDictionary[playerWeapon].damage
@@ -183,8 +181,8 @@ Events.register("Attack", (enemy) => {
 
   //Player deals damage
   enemy.health = enemy.health - playerDamage
-  GameManager.setDescription("You hit " + enemy.name + " for " + playerDamage + " damage!")
-  GameManager.addToDescription(enemy.name + " has " + enemy.health + " health left.")
+  DescriptionManager.set("You hit " + enemy.name + " for " + playerDamage + " damage!")
+  DescriptionManager.add(enemy.name + " has " + enemy.health + " health left.")
 
   //Check if enemy is still alive
   if (enemy.health < 1) {
@@ -193,8 +191,8 @@ Events.register("Attack", (enemy) => {
   else {
     //Enemy deals damage
     Events.emit("PlayerTakesDamage", enemyDamage, "Skeleton")
-    GameManager.addToDescription(enemy.name + " hits you for " + enemyDamage + " damage!")
-    GameManager.addToDescription("You have " + gameState.playerHealth + " health left.")
+    DescriptionManager.add(enemy.name + " hits you for " + enemyDamage + " damage!")
+    DescriptionManager.add("You have " + gameState.playerHealth + " health left.")
   }
 })
 
@@ -204,23 +202,23 @@ Events.register("EnemyDeath", (enemy) => {
   InventoryManager.add(loot)
   CombatManager.complete()
   GameManager.setRoom(gameState.previousLocation)
-  GameManager.setDescription(enemy.name + " dies!")
+  DescriptionManager.set(enemy.name + " dies!")
 })
-//======== COMBAT SYSTEM v1 =========//
+//======== COMBAT SYSTEM =========//
 
 
 
 
 
 Events.register("PrintPlayerGold", () => {
-  GameManager.addToDescription("You have " + gameState.playerGold + " gold left.")
+  DescriptionManager.add("You have " + gameState.playerGold + " gold left.")
   console.log(gameState.playerItems)
 })
 
 Events.register("PrintPlayerItems", () => {
-  GameManager.setDescription("Player's inventory:")
+  DescriptionManager.set("Player's inventory:")
   gameState.playerItems.forEach(playerItem => {
-    GameManager.addToDescription(ItemTagDictionary[playerItem].name)
+    DescriptionManager.add(ItemTagDictionary[playerItem].name)
   })
 
   //logging to console for testing
@@ -273,15 +271,6 @@ Events.register("RoomChanges", (currentRoom, targetRoom) => {
 
 
 
-
-
-Events.register("DescriptionChanges", (description) => {
-  UI.setThemeDescription(description)
-})
-
-Events.register("DescriptionAdds", (newDescription) => {
-  UI.addToThemeDescription(newDescription)
-})
 
 function create(itemTag, options = {}) {
   return {
@@ -432,23 +421,7 @@ const ItemTagDictionary = {
 }
 
 
-
-// const skeleton1 = create('skeleton', {
-//   health: 44,
-//   weapon: 'ironsword',
-//   lootTable: [
-//     {
-//       name: 'healthpotion',
-//       dropchance: 0.5
-//     }
-//   ]
-// })
-
 let currentEnemy = undefined
-
-//example for enemy dropping loot
-//const lootFromSkeleton1 = getLootRoll(skeleton1)
-
 
 
 
@@ -472,13 +445,13 @@ const gameWorld = {
       {
         label: "Load game",
         action: () => {
-          GameManager.setDescription("Sorry, loading a game doesn't work yet!")
+          DescriptionManager.set("Sorry, loading a game doesn't work yet!")
         }
       },
       {
         label: "Options",
         action: () => {
-          GameManager.setDescription("Sorry, there's no options yet!")
+          DescriptionManager.set("Sorry, there's no options yet!")
         }
       },
       {
@@ -575,7 +548,7 @@ const gameWorld = {
         action: () => {
           CombatManager.clear()
           GameManager.setRoom(LocationManager.getPriorLocation(2))
-          GameManager.addToDescription("You manage to run away safely.")
+          DescriptionManager.add("You manage to run away safely.")
         }
       },
     ]
@@ -597,7 +570,7 @@ const gameWorld = {
   //       label: "Run away",
   //       action: () => {
   //         GameManager.setRoom(gameWorld[gameState.previousLocation])
-  //         GameManager.addToDescription("You manage to run away safely.")
+  //         DescriptionManager.add("You manage to run away safely.")
   //       }
   //     },
   //   ]
@@ -638,7 +611,7 @@ const gameWorld = {
       {
         label: "Look around",
         action: () => {
-          GameManager.setDescription(gameWorld.playerhome.description)
+          DescriptionManager.set(gameWorld.playerhome.description)
         }
       },
       {
@@ -677,7 +650,7 @@ const gameWorld = {
       {
         label: "Look around",
         action: () => {
-          GameManager.setDescription(gameWorld.playerhome_kitchen.description)
+          DescriptionManager.set(gameWorld.playerhome_kitchen.description)
         }
       },
       {
@@ -711,7 +684,7 @@ const gameWorld = {
       {
         label: "Look around",
         action: () => {
-          GameManager.setDescription(gameWorld.playerhome_bedroom.description)
+          DescriptionManager.set(gameWorld.playerhome_bedroom.description)
         }
       },
       {
@@ -744,7 +717,7 @@ const gameWorld = {
       {
         label: "Look around",
         action: () => {
-          GameManager.setDescription(gameWorld.townsquare.description)
+          DescriptionManager.set(gameWorld.townsquare.description)
         }
       },
       {
@@ -775,20 +748,20 @@ const gameWorld = {
             Events.emit('Drink')
           }
           else {
-            GameManager.setDescription("You can't afford that!")
+            DescriptionManager.set("You can't afford that!")
           }
         }
       },
       {
         label: "Shout at bartender",
         action: () => {
-          GameManager.setDescription("You yell: &quot;Oi! What arr ye lookin' at!&quot; <br> The man doesn't seem to like it...")
+          DescriptionManager.set("You yell: &quot;Oi! What arr ye lookin' at!&quot; <br> The man doesn't seem to like it...")
         }
       },
       {
         label: "Look around",
         action: () => {
-          GameManager.setDescription(gameWorld.bar.description)
+          DescriptionManager.set(gameWorld.bar.description)
         }
       },
       {
@@ -827,7 +800,7 @@ const gameWorld = {
       {
         label: "Look around",
         action: () => {
-          GameManager.setDescription(gameWorld.forest.description)
+          DescriptionManager.set(gameWorld.forest.description)
         }
       },
       {
@@ -866,7 +839,7 @@ const gameWorld = {
       {
         label: "Look around",
         action: () => {
-          GameManager.setDescription(gameWorld.forest_fog.description)
+          DescriptionManager.set(gameWorld.forest_fog.description)
         }
       },
       {
@@ -899,7 +872,7 @@ const gameWorld = {
       {
         label: "Look around",
         action: () => {
-          GameManager.setDescription(gameWorld.cabin.description)
+          DescriptionManager.set(gameWorld.cabin.description)
         }
       },
       {
@@ -932,7 +905,7 @@ const gameWorld = {
       {
         label: "Look around",
         action: () => {
-          GameManager.setDescription(gameWorld.cabin_inside.description)
+          DescriptionManager.set(gameWorld.cabin_inside.description)
         }
       },
       {
@@ -959,7 +932,7 @@ const gameWorld = {
       {
         label: "Look around",
         action: () => {
-          GameManager.setDescription(gameWorld.river.description)
+          DescriptionManager.set(gameWorld.river.description)
         }
       },
       {
